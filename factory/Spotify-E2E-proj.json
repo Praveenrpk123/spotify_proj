@@ -1,0 +1,9 @@
+{
+	"name": "Spotify-E2E-proj",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "1c2ae5a1-d6ac-4568-8c90-1f40753b53d4",
+		"tenantId": "4907824b-9e8c-464c-a147-3bbedcc0e8f5"
+	}
+}
