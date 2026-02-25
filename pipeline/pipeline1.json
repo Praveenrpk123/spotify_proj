@@ -159,8 +159,6 @@
 									{
 										"name": "Cd_tables_to_adls",
 										"type": "Copy",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [
 											{
 												"activity": "last_cdc",
@@ -187,7 +185,7 @@
 											"source": {
 												"type": "AzureSqlSource",
 												"sqlReaderQuery": {
-													"value": "select * from @{item().table_schema}.@{item().Table_name} where\nif(equals(@{item().Table_name},'FactStream'),'stream_timestamp','updated_at') > if(empty(@{pipeline().parameters.Backfilling_start_date}, @{activity('last_cdc').output.firstRow[concat(item().Table_schema, '_', item().Table_name,'_cdc')]},pipeline().parameters.Backfilling_start_date )) and @{item().Table_name} = if(empty(@{pipeline().parameters.Backfilling_Table_name}, @{item().Table_name},@{pipeline().parameters.Backfilling_Table_name}))",
+													"value": "select * from @{item().table_schema}.@{item().Table_name} where @{if(equals(item().Table_name,'FactStream'),'stream_timestamp','updated_at')} > @{if(empty(pipeline().parameters.Backfilling_start_date),\nactivity('last_cdc').output.firstRow[concat(item().Table_schema, '_', item().Table_name,'_cdc')] ,\npipeline().parameters.Backfilling_start_date)} and @{item().Table_name} = @{if(empty(pipeline().parameters.Backfilling_Table_name), item().Table_name, pipeline().parameters.Backfilling_Table_name)}",
 													"type": "Expression"
 												},
 												"queryTimeout": "02:00:00",
@@ -373,7 +371,7 @@
 										"typeProperties": {
 											"variableName": "max_ts",
 											"value": {
-												"value": "@activity('max_ts').output.fieldSets[0].rows[0].",
+												"value": "@activity('max_ts').output.fieldSets[0].rows[0]",
 												"type": "Expression"
 											}
 										}
