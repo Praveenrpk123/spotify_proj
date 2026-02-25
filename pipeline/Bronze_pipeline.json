@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "Bronze_pipeline",
 	"properties": {
 		"activities": [
 			{
@@ -87,6 +87,139 @@
 									"value": "@not(contains(createArray('DimDate'), item().Table_name))",
 									"type": "Expression"
 								},
+								"ifFalseActivities": [
+									{
+										"name": "DimDate_copy",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": "select * from dbo.DimDate;",
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "ParquetSink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												},
+												"formatSettings": {
+													"type": "ParquetWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"mappings": [
+													{
+														"source": {
+															"name": "date_key",
+															"type": "Int32",
+															"physicalType": "int"
+														},
+														"sink": {
+															"name": "date_key",
+															"type": "Int32",
+															"physicalType": "INT_32"
+														}
+													},
+													{
+														"source": {
+															"name": "date",
+															"type": "Date",
+															"physicalType": "date"
+														},
+														"sink": {
+															"name": "date",
+															"type": "Date"
+														}
+													},
+													{
+														"source": {
+															"name": "day",
+															"type": "Int32",
+															"physicalType": "int"
+														},
+														"sink": {
+															"name": "day",
+															"type": "Int32",
+															"physicalType": "INT_32"
+														}
+													},
+													{
+														"source": {
+															"name": "month",
+															"type": "Int32",
+															"physicalType": "int"
+														},
+														"sink": {
+															"name": "month",
+															"type": "Int32",
+															"physicalType": "INT_32"
+														}
+													},
+													{
+														"source": {
+															"name": "year",
+															"type": "Int32",
+															"physicalType": "int"
+														},
+														"sink": {
+															"name": "year",
+															"type": "Int32",
+															"physicalType": "INT_32"
+														}
+													},
+													{
+														"source": {
+															"name": "weekday",
+															"type": "String",
+															"physicalType": "varchar"
+														},
+														"sink": {
+															"name": "weekday",
+															"type": "String",
+															"physicalType": "UTF8"
+														}
+													}
+												],
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "SQL_SRC_DS",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "spotify_bronze_sink_ds",
+												"type": "DatasetReference",
+												"parameters": {
+													"Directory": "DimDate",
+													"file": {
+														"value": "@{concat('DimDate_',utcNow())}",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								],
 								"ifTrueActivities": [
 									{
 										"name": "Script2",
@@ -253,7 +386,13 @@
 										"type": "Copy",
 										"dependsOn": [
 											{
-												"activity": "Delete1",
+												"activity": "Max_ts_val",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											},
+											{
+												"activity": "json_field_name",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -272,7 +411,7 @@
 												"type": "JsonSource",
 												"additionalColumns": [
 													{
-														"name": "@variables('max_ts_col_name')",
+														"name": "@{concat(item().Table_schema, '_', item().Table_name,'.cdc')}",
 														"value": {
 															"value": "@variables('max_ts')",
 															"type": "Expression"
@@ -348,7 +487,7 @@
 										"typeProperties": {
 											"variableName": "name_val",
 											"value": {
-												"value": "concat(@{item().Table_schema}, '_',@{item().Table_name},'.cdc')",
+												"value": "@{concat(item().Table_schema, '_', item().Table_name,'.cdc')}",
 												"type": "Expression"
 											}
 										}
@@ -435,53 +574,6 @@
 												}
 											],
 											"scriptBlockExecutionTimeout": "02:00:00"
-										}
-									},
-									{
-										"name": "Delete1",
-										"type": "Delete",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
-										"dependsOn": [
-											{
-												"activity": "json_field_name",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											},
-											{
-												"activity": "Max_ts_val",
-												"dependencyConditions": [
-													"Succeeded"
-												]
-											}
-										],
-										"policy": {
-											"timeout": "0.12:00:00",
-											"retry": 0,
-											"retryIntervalInSeconds": 30,
-											"secureOutput": false,
-											"secureInput": false
-										},
-										"userProperties": [],
-										"typeProperties": {
-											"dataset": {
-												"referenceName": "Json1",
-												"type": "DatasetReference"
-											},
-											"logStorageSettings": {
-												"linkedServiceName": {
-													"referenceName": "ADLS_LS",
-													"type": "LinkedServiceReference"
-												},
-												"path": "logging"
-											},
-											"enableLogging": true,
-											"storeSettings": {
-												"type": "AzureBlobFSReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false
-											}
 										}
 									}
 								]
