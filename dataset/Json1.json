@@ -1,0 +1,32 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ADLS_LS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "lastload.json",
+				"fileSystem": "cdc"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"dbo_DimArtist_cdc": {
+					"type": "string"
+				},
+				"dbo_DimUser_cdc": {
+					"type": "string"
+				},
+				"dbo_DimTrack_cdc": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"name": "Key_vault_ls",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://SpotifyKeyVault1.vault.azure.net/"
+		}
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"name": "SQL_SRC_LS",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "azure-sql-db-e2e.database.windows.net",
+			"database": "Spotify-E2E-proj",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "spotify_admin",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "Key_vault_ls",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "Azure-sql-db-key"
+			},
+			"alwaysEncryptedSettings": {
+				"alwaysEncryptedAkvAuthType": "ManagedIdentity"
+			}
+		}
+	}
+}
