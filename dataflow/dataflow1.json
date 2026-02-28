@@ -31,7 +31,7 @@
 				"          stream_id as short,",
 				"          user_id as short,",
 				"          track_id as short,",
-				"          date_key as string,",
+				"          date_key as integer,",
 				"          listen_duration as short,",
 				"          device_type as string,",
 				"          stream_timestamp as string",
