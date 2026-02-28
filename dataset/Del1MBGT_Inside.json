@@ -23,10 +23,41 @@
 				"fileSystem": "interview-prep"
 			},
 			"columnDelimiter": ",",
+			"compressionCodec": "gzip",
+			"compressionLevel": "Fastest",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "track_id",
+				"type": "String"
+			},
+			{
+				"name": "track_name",
+				"type": "String"
+			},
+			{
+				"name": "artist_id",
+				"type": "String"
+			},
+			{
+				"name": "album_name",
+				"type": "String"
+			},
+			{
+				"name": "duration_sec",
+				"type": "String"
+			},
+			{
+				"name": "release_date",
+				"type": "String"
+			},
+			{
+				"name": "updated_at",
+				"type": "String"
+			}
+		]
 	}
 }
