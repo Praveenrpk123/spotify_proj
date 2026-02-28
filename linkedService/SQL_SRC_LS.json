@@ -17,9 +17,6 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "Azure-sql-db-key"
-			},
-			"alwaysEncryptedSettings": {
-				"alwaysEncryptedAkvAuthType": "ManagedIdentity"
 			}
 		}
 	}
