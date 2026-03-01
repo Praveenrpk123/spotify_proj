@@ -1,13 +1,68 @@
 {
-	"name": "flatten_json",
+	"name": "flatten_fields",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "file_data_ds_flatten",
+						"type": "DatasetReference"
+					},
+					"name": "sourcefile"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Src_target",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "flatten1"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          ItemId as short,",
+				"          ItemName as string,",
+				"          VartName as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> sourcefile",
+				"sourcefile derive(VartName = split(VartName,'|')) ~> derivedColumn1",
+				"derivedColumn1 foldDown(unroll(VartName, VartName),",
+				"     mapColumn(",
+				"          ItemId,",
+				"          ItemName,",
+				"          VartName",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          ItemId,",
+				"          ItemName,",
+				"          VartName",
+				"     )) ~> sink1"
 			]
 		}
 	}
