@@ -1,16 +1,24 @@
 {
-	"name": "file_data_ds_flatten",
+	"name": "DelimitedText5",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"fileName": {
+				"type": "string"
+			}
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "items_1.csv",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
 				"folderPath": "files_date",
 				"fileSystem": "interview-prep"
 			},
@@ -21,27 +29,15 @@
 		},
 		"schema": [
 			{
-				"name": "SO_Id",
+				"name": "ItemId",
 				"type": "String"
 			},
 			{
-				"name": "SODate",
+				"name": "ItemName",
 				"type": "String"
 			},
 			{
-				"name": "Country",
-				"type": "String"
-			},
-			{
-				"name": "Item",
-				"type": "String"
-			},
-			{
-				"name": "Qty",
-				"type": "String"
-			},
-			{
-				"name": "Value",
+				"name": "VartName",
 				"type": "String"
 			}
 		]

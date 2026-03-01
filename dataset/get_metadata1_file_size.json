@@ -1,5 +1,5 @@
 {
-	"name": "file_data_ds_flatten",
+	"name": "get_metadata1_file_size",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "items_1.csv",
 				"folderPath": "files_date",
 				"fileSystem": "interview-prep"
 			},
@@ -19,31 +18,6 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": [
-			{
-				"name": "SO_Id",
-				"type": "String"
-			},
-			{
-				"name": "SODate",
-				"type": "String"
-			},
-			{
-				"name": "Country",
-				"type": "String"
-			},
-			{
-				"name": "Item",
-				"type": "String"
-			},
-			{
-				"name": "Qty",
-				"type": "String"
-			},
-			{
-				"name": "Value",
-				"type": "String"
-			}
-		]
+		"schema": []
 	}
 }
