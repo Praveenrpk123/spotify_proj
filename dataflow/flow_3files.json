@@ -1,0 +1,91 @@
+{
+	"name": "flow_3files",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Source_files",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SQL_SRC_DS",
+						"type": "DatasetReference"
+					},
+					"name": "lesser25k"
+				},
+				{
+					"dataset": {
+						"referenceName": "SQL_SRC_DS",
+						"type": "DatasetReference"
+					},
+					"name": "greater50k"
+				},
+				{
+					"dataset": {
+						"referenceName": "SQL_SRC_DS",
+						"type": "DatasetReference"
+					},
+					"name": "between25kto50k"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Country as string,",
+				"          Year as string,",
+				"          Record_ID as string,",
+				"          Customer_Name as string,",
+				"          Sales_Amount as string,",
+				"          Quantity as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source",
+				"source split(toInteger(Sales_Amount) < 25000,",
+				"     toInteger(Sales_Amount)>50000,",
+				"     disjoint: false) ~> split1@(less25k, greater25k, betweenvalues)",
+				"split1@less25k sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> lesser25k",
+				"split1@greater25k sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> greater50k",
+				"split1@betweenvalues sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> between25kto50k"
+			]
+		}
+	}
+}
