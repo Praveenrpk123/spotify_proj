@@ -1,0 +1,93 @@
+{
+	"name": "array_json_flatten",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json4",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText10",
+						"type": "DatasetReference"
+					},
+					"name": "updatedjsontocsv",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SO_Id as string,",
+				"          SODate as string,",
+				"          Country as string,",
+				"          Sales as (Item as string, Qty as string, Value as string)[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> source1",
+				"source1 foldDown(unroll(Sales),",
+				"     mapColumn(",
+				"          SO_Id,",
+				"          SODate,",
+				"          Country,",
+				"          Sales",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 derive(Sale_item = toInteger(Sales.Item),",
+				"          Sale_Qty = toInteger(Sales.Qty),",
+				"          Sale_value = toDecimal(Sales.Value,8,2)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          SO_Id,",
+				"          SODate,",
+				"          Country,",
+				"          Sale_item,",
+				"          Sale_Qty,",
+				"          Sale_value",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:[(concat('adf_dim_json_to_csv', toString(currentTimestamp())))],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          SO_Id,",
+				"          SODate,",
+				"          Country,",
+				"          Sale_item,",
+				"          Sale_Qty,",
+				"          Sale_value",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> updatedjsontocsv"
+			]
+		}
+	}
+}

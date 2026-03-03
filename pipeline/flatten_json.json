@@ -1,6 +1,40 @@
 {
 	"name": "flatten_json",
 	"properties": {
+		"activities": [
+			{
+				"name": "array_json_flatten",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "array_json_flatten",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"updatedjsontocsv": {
+								"fileName": {
+									"value": "@concat('json_flatten_csv_',utcNow())",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
 		"annotations": []
 	}
 }
