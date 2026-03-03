@@ -1,0 +1,73 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "csv_test",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_sql_dataflow",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          TransactionID as integer,",
+				"          CustomerName as string,",
+				"          Amount as string,",
+				"          PurchaseDate as string,",
+				"          Category as string,",
+				"          IsProcessed as string,",
+				"          TaxRate as double,",
+				"          Email as string,",
+				"          Region as string,",
+				"          Rating as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 split(isNull(TransactionID) || isNull(toDecimal(Amount,8,2)) || isNull(toDate(PurchaseDate, \"yyyy-mm-dd\")) ||  not(in([\"True\", \"False\", \"Yes\",\"No\",\"0\",\"1\"], IsProcessed)),",
+				"     disjoint: false) ~> split1@(errorrows, goodRows)",
+				"split1@errorrows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     recreate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          TransactionID,",
+				"          CustomerName,",
+				"          Amount,",
+				"          PurchaseDate,",
+				"          Category,",
+				"          IsProcessed,",
+				"          TaxRate,",
+				"          Email,",
+				"          Region,",
+				"          Rating",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

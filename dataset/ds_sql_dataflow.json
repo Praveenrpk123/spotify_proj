@@ -1,0 +1,25 @@
+{
+	"name": "ds_sql_dataflow",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL_SRC_LS",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"tableName": {
+				"type": "string",
+				"defaultValue": "cust"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	}
+}
