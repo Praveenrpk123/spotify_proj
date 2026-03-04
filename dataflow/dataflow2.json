@@ -19,6 +19,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "errorrowssink"
+				},
+				{
+					"dataset": {
+						"referenceName": "az_sql",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -70,7 +77,17 @@
 				"          Email,",
 				"          Region,",
 				"          Rating",
-				"     )) ~> errorrowssink"
+				"     )) ~> errorrowssink",
+				"split1@goodRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}

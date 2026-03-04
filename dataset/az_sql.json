@@ -1,0 +1,16 @@
+{
+	"name": "az_sql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL_SRC_LS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "cust_success"
+		}
+	}
+}
