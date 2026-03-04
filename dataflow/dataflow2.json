@@ -18,12 +18,15 @@
 						"referenceName": "ds_sql_dataflow",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "errorrowssink"
 				}
 			],
 			"transformations": [
 				{
 					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -42,8 +45,9 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
-				"source1 split(isNull(TransactionID) || isNull(toDecimal(Amount,8,2)) || isNull(toDate(PurchaseDate, \"yyyy-mm-dd\")) ||  not(in([\"True\", \"False\", \"Yes\",\"No\",\"0\",\"1\"], IsProcessed)),",
+				"derivedColumn1 split(isNull(TransactionID) || isNull(toDecimal(Amount,8,2)) || isNull(PurchaseDate) ||  not(in([\"True\", \"False\", \"Yes\",\"No\",\"0\",\"1\"], IsProcessed)),",
 				"     disjoint: false) ~> split1@(errorrows, goodRows)",
+				"source1 derive(PurchaseDate = coalesce(toDate(PurchaseDate, 'yyyy-MM-dd'), toDate(PurchaseDate, 'yyyy/MM/dd'), toDate(PurchaseDate, 'yyyy.MM.dd'), toDate(PurchaseDate, 'dd-MM-yyyy'), toDate(PurchaseDate, 'MM-dd-yyyy'))) ~> derivedColumn1",
 				"split1@errorrows sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -66,7 +70,7 @@
 				"          Email,",
 				"          Region,",
 				"          Rating",
-				"     )) ~> sink1"
+				"     )) ~> errorrowssink"
 			]
 		}
 	}
