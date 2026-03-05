@@ -1,5 +1,5 @@
 {
-	"name": "pipeline7",
+	"name": "incremental_data",
 	"properties": {
 		"activities": [
 			{
@@ -62,7 +62,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "select * from dbo.@{item().Table_name} where updated_dttm >= @{item().last_timestamp}",
+										"value": "select * from dbo.@{item().Table_name} where updated_dttm > '@{item().last_timestamp}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",

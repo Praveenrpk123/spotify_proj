@@ -6,7 +6,7 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "pipeline7",
+					"referenceName": "incremental_data",
 					"type": "PipelineReference"
 				}
 			}
