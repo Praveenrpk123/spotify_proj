@@ -1,0 +1,26 @@
+{
+	"name": "lookup_cntl_tbl_ls",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SQL_SRC_LS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "table_name",
+				"type": "varchar"
+			},
+			{
+				"name": "last_timestamp",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "control_table"
+		}
+	}
+}
